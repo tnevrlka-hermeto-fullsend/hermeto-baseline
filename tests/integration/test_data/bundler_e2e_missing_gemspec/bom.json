@@ -40,7 +40,12 @@
         "pkg:gem/net-protocol@0.2.2",
         "pkg:gem/net-smtp@0.5.0",
         "pkg:gem/nio4r@2.7.3",
-        "pkg:gem/nokogiri@1.16.7",
+        "pkg:gem/nokogiri@1.16.7?platform=aarch64-linux",
+        "pkg:gem/nokogiri@1.16.7?platform=arm-linux",
+        "pkg:gem/nokogiri@1.16.7?platform=arm64-darwin",
+        "pkg:gem/nokogiri@1.16.7?platform=x86-linux",
+        "pkg:gem/nokogiri@1.16.7?platform=x86_64-darwin",
+        "pkg:gem/nokogiri@1.16.7?platform=x86_64-linux",
         "pkg:gem/public_suffix@6.0.1",
         "pkg:gem/racc@1.8.1",
         "pkg:gem/rack-test@2.1.0",
@@ -494,7 +499,7 @@
       "version": "2.7.3"
     },
     {
-      "bom-ref": "pkg:gem/nokogiri@1.16.7",
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=aarch64-linux",
       "name": "nokogiri",
       "properties": [
         {
@@ -506,7 +511,92 @@
           "value": "hermeto"
         }
       ],
-      "purl": "pkg:gem/nokogiri@1.16.7",
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=aarch64-linux",
+      "type": "library",
+      "version": "1.16.7"
+    },
+    {
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=arm-linux",
+      "name": "nokogiri",
+      "properties": [
+        {
+          "name": "hermeto:bundler:package:binary",
+          "value": "true"
+        },
+        {
+          "name": "hermeto:found_by",
+          "value": "hermeto"
+        }
+      ],
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=arm-linux",
+      "type": "library",
+      "version": "1.16.7"
+    },
+    {
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=arm64-darwin",
+      "name": "nokogiri",
+      "properties": [
+        {
+          "name": "hermeto:bundler:package:binary",
+          "value": "true"
+        },
+        {
+          "name": "hermeto:found_by",
+          "value": "hermeto"
+        }
+      ],
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=arm64-darwin",
+      "type": "library",
+      "version": "1.16.7"
+    },
+    {
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=x86-linux",
+      "name": "nokogiri",
+      "properties": [
+        {
+          "name": "hermeto:bundler:package:binary",
+          "value": "true"
+        },
+        {
+          "name": "hermeto:found_by",
+          "value": "hermeto"
+        }
+      ],
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=x86-linux",
+      "type": "library",
+      "version": "1.16.7"
+    },
+    {
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=x86_64-darwin",
+      "name": "nokogiri",
+      "properties": [
+        {
+          "name": "hermeto:bundler:package:binary",
+          "value": "true"
+        },
+        {
+          "name": "hermeto:found_by",
+          "value": "hermeto"
+        }
+      ],
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=x86_64-darwin",
+      "type": "library",
+      "version": "1.16.7"
+    },
+    {
+      "bom-ref": "pkg:gem/nokogiri@1.16.7?platform=x86_64-linux",
+      "name": "nokogiri",
+      "properties": [
+        {
+          "name": "hermeto:bundler:package:binary",
+          "value": "true"
+        },
+        {
+          "name": "hermeto:found_by",
+          "value": "hermeto"
+        }
+      ],
+      "purl": "pkg:gem/nokogiri@1.16.7?platform=x86_64-linux",
       "type": "library",
       "version": "1.16.7"
     },

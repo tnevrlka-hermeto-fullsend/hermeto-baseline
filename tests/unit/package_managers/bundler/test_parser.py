@@ -308,6 +308,24 @@ def test_purls(rooted_tmp_path_repo: RootedPath) -> None:
             "pkg:gem/my-gem-dep@0.1.0",
         ),
         (
+            GemPlatformSpecificDependency(
+                name="my-platform-dep",
+                version="4.29.3",
+                source="https://rubygems.org",
+                platform="aarch64-linux-gnu",
+            ),
+            "pkg:gem/my-platform-dep@4.29.3?platform=aarch64-linux-gnu",
+        ),
+        (
+            GemPlatformSpecificDependency(
+                name="my-platform-dep",
+                version="4.29.3",
+                source="https://rubygems.org",
+                platform="aarch64-linux",
+            ),
+            "pkg:gem/my-platform-dep@4.29.3?platform=aarch64-linux",
+        ),
+        (
             GitDependency(
                 name="my-git-dep",
                 version="0.1.0",

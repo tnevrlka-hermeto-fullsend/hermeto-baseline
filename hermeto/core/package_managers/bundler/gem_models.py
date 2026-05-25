@@ -86,6 +86,17 @@ class GemPlatformSpecificDependency(GemDependency):
 
     platform: str
 
+    @cached_property
+    def purl(self) -> str:
+        """Get PURL for this dependency, including the platform qualifier."""
+        purl = PackageURL(
+            type="gem",
+            name=self.name,
+            version=self.version,
+            qualifiers={"platform": self.platform},
+        )
+        return purl.to_string()
+
     @property
     def remote_location(self) -> str:
         """Return remote location to download this gem from."""
