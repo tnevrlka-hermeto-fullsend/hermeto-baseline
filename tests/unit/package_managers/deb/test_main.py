@@ -14,11 +14,11 @@ from hermeto.core.errors import (
 from hermeto.core.models.input import DebBinaryFilters
 from hermeto.core.models.sbom import Annotation, Component, Property
 from hermeto.core.package_managers.deb import fetch_deb_source, inject_files_post
-from hermeto.core.package_managers.deb.debian import DebianDebsLock
 from hermeto.core.package_managers.deb.binary_filters import (
     DEBArchitectureFilter,
     UnsatisfiableArchitectureFilter,
 )
+from hermeto.core.package_managers.deb.debian import DebianDebsLock
 from hermeto.core.package_managers.deb.main import (
     Package,
     _download,
@@ -250,7 +250,9 @@ def test_download_filters_architectures(
         }
     )
 
-    metadata = _download(lock, rooted_tmp_path.path, DEBArchitectureFilter(DebBinaryFilters(arch="amd64")))
+    metadata = _download(
+        lock, rooted_tmp_path.path, DEBArchitectureFilter(DebBinaryFilters(arch="amd64"))
+    )
 
     paths = [str(p) for p in metadata.keys()]
     assert all("amd64" in p for p in paths)

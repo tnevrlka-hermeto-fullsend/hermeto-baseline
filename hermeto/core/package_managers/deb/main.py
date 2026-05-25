@@ -23,9 +23,9 @@ from hermeto.core.errors import (
     LockfileNotFound,
 )
 from hermeto.core.models.input import DebBinaryFilters, Request
-from hermeto.core.package_managers.deb.binary_filters import DEBArchitectureFilter
 from hermeto.core.models.output import RequestOutput
 from hermeto.core.models.sbom import Component, Property, create_backend_annotation
+from hermeto.core.package_managers.deb.binary_filters import DEBArchitectureFilter
 from hermeto.core.package_managers.deb.debian import DebianDebsLock
 from hermeto.core.package_managers.general import async_download_files
 from hermeto.core.rooted_path import RootedPath
