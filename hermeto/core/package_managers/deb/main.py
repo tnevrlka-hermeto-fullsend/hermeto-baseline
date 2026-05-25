@@ -23,6 +23,7 @@ from hermeto.core.errors import (
     LockfileNotFound,
 )
 from hermeto.core.models.input import DebBinaryFilters, Request
+from hermeto.core.package_managers.deb.binary_filters import DEBArchitectureFilter
 from hermeto.core.models.output import RequestOutput
 from hermeto.core.models.sbom import Component, Property, create_backend_annotation
 from hermeto.core.package_managers.deb.debian import DebianDebsLock
@@ -230,7 +231,8 @@ def _resolve_deb_project(
             )
 
         package_dir = output_dir.join_within_root(DEFAULT_PACKAGE_DIR)
-        metadata = _download(debian_debs_lock, package_dir.path, binary_filter)
+        arch_filter = DEBArchitectureFilter(binary_filter)
+        metadata = _download(debian_debs_lock, package_dir.path, arch_filter)
         _verify_downloaded(metadata)
 
         lockfile_relative_path = source_dir.subpath_from_root / DEFAULT_LOCKFILE_NAME
@@ -239,19 +241,10 @@ def _resolve_deb_project(
         )
 
 
-def _filter_arches(arches: list[Any], binary_filter: DebBinaryFilters | None) -> list[Any]:
-    """Filter architectures based on binary filter constraints."""
-    if binary_filter is None or binary_filter.arch == ":all:":
-        return arches
-
-    allowed = {s.strip() for s in binary_filter.arch.split(",")}
-    return [a for a in arches if a.arch in allowed]
-
-
 def _download(
     lockfile: DebianDebsLock,
     output_dir: Path,
-    binary_filter: DebBinaryFilters | None = None,
+    binary_filter: DEBArchitectureFilter | None = None,
 ) -> dict[Path, Any]:
     """Download packages mentioned in the lockfile.
 
@@ -260,7 +253,10 @@ def _download(
     for later verification (size, checksum) after download.
     Prepare a list of files to be downloaded, and then download files.
     """
-    arches_to_process = _filter_arches(lockfile.arches, binary_filter)
+    if binary_filter is not None:
+        arches_to_process = binary_filter.validate_and_filter(lockfile.arches)
+    else:
+        arches_to_process = lockfile.arches
 
     metadata: dict[Path, Any] = {}
     for arch in arches_to_process:

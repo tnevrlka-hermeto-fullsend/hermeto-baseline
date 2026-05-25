@@ -15,10 +15,13 @@ from hermeto.core.models.input import DebBinaryFilters
 from hermeto.core.models.sbom import Annotation, Component, Property
 from hermeto.core.package_managers.deb import fetch_deb_source, inject_files_post
 from hermeto.core.package_managers.deb.debian import DebianDebsLock
+from hermeto.core.package_managers.deb.binary_filters import (
+    DEBArchitectureFilter,
+    UnsatisfiableArchitectureFilter,
+)
 from hermeto.core.package_managers.deb.main import (
     Package,
     _download,
-    _filter_arches,
     _generate_sbom_components,
     _resolve_deb_project,
     _verify_downloaded,
@@ -201,9 +204,11 @@ def test_resolve_deb_project(
     source_dir.subpath_from_root = Path()
 
     _resolve_deb_project(source_dir, output_dir, None)
-    mock_download.assert_called_once_with(
-        mock_model_validate.return_value, mock_package_dir_path, None
-    )
+    mock_download.assert_called_once()
+    call_args = mock_download.call_args
+    assert call_args[0][0] == mock_model_validate.return_value
+    assert call_args[0][1] == mock_package_dir_path
+    assert isinstance(call_args[0][2], DEBArchitectureFilter)
     mock_verify_downloaded.assert_called_once_with({})
     mock_generate_sbom_components.assert_called_once_with({}, Path("debs.lock.yaml"), "debian")
 
@@ -245,7 +250,7 @@ def test_download_filters_architectures(
         }
     )
 
-    metadata = _download(lock, rooted_tmp_path.path, DebBinaryFilters(arch="amd64"))
+    metadata = _download(lock, rooted_tmp_path.path, DEBArchitectureFilter(DebBinaryFilters(arch="amd64")))
 
     paths = [str(p) for p in metadata.keys()]
     assert all("amd64" in p for p in paths)
@@ -401,16 +406,26 @@ def test_generate_sbom_components(
 def test_filter_arches_all() -> None:
     """Test that None filter returns all arches."""
     arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
-    result = _filter_arches(arches, None)
+    arch_filter = DEBArchitectureFilter(None)
+    result = arch_filter.validate_and_filter(arches)
     assert len(result) == 2
 
 
 def test_filter_arches_specific() -> None:
     """Test that specific filter returns only matching arches."""
     arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
-    result = _filter_arches(arches, DebBinaryFilters(arch="amd64"))
+    arch_filter = DEBArchitectureFilter(DebBinaryFilters(arch="amd64"))
+    result = arch_filter.validate_and_filter(arches)
     assert len(result) == 1
     assert result[0].arch == "amd64"
+
+
+def test_filter_arches_unsatisfiable() -> None:
+    """Test that unsatisfiable filter raises UnsatisfiableArchitectureFilter."""
+    arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
+    arch_filter = DEBArchitectureFilter(DebBinaryFilters(arch="s390x"))
+    with pytest.raises(UnsatisfiableArchitectureFilter, match="s390x"):
+        arch_filter.validate_and_filter(arches)
 
 
 @mock.patch("hermeto.core.package_managers.deb.main.Path")
