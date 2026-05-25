@@ -409,7 +409,7 @@ def test_filter_arches_all() -> None:
     """Test that None filter returns all arches."""
     arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
     arch_filter = DEBArchitectureFilter(None)
-    result = arch_filter.validate_and_filter(arches)
+    result = arch_filter.validate_and_filter(arches)  # type: ignore[arg-type]
     assert len(result) == 2
 
 
@@ -417,7 +417,7 @@ def test_filter_arches_specific() -> None:
     """Test that specific filter returns only matching arches."""
     arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
     arch_filter = DEBArchitectureFilter(DebBinaryFilters(arch="amd64"))
-    result = arch_filter.validate_and_filter(arches)
+    result = arch_filter.validate_and_filter(arches)  # type: ignore[arg-type]
     assert len(result) == 1
     assert result[0].arch == "amd64"
 
@@ -427,7 +427,7 @@ def test_filter_arches_unsatisfiable() -> None:
     arches = [mock.Mock(arch="amd64"), mock.Mock(arch="arm64")]
     arch_filter = DEBArchitectureFilter(DebBinaryFilters(arch="s390x"))
     with pytest.raises(UnsatisfiableArchitectureFilter, match="s390x"):
-        arch_filter.validate_and_filter(arches)
+        arch_filter.validate_and_filter(arches)  # type: ignore[arg-type]
 
 
 @mock.patch("hermeto.core.package_managers.deb.main.Path")
