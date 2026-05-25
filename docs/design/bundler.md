@@ -555,6 +555,23 @@ Also check the Ruby PURL [specification](https://github.com/package-url/purl-spe
 pkg:gem/my-gem-name@0.1.1
 ```
 
+##### Platform-specific Gem
+
+Platform-specific gems include the platform as a PURL qualifier:
+```txt
+pkg:gem/my-gem-name@0.1.1?platform=aarch64-linux
+```
+
+The platform value comes from the `Gemfile.lock`, where platform-specific gems
+are listed with their platform suffix:
+
+```
+GEM
+  remote: https://rubygems.org/
+  specs:
+    my-gem-name (0.1.1-aarch64-linux)
+```
+
 ##### Git dependency
 
 ```txt
