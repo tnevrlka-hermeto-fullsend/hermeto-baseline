@@ -319,7 +319,13 @@ def _verify_downloaded(metadata: dict[Path, Any]) -> None:
 
         # checksum is optional
         if file_metadata["checksum"] is not None:
-            alg, digest = file_metadata["checksum"].split(":")
+            parts = file_metadata["checksum"].split(":", maxsplit=1)
+            if len(parts) != 2 or not parts[0]:
+                raise_exception(
+                    file_path,
+                    f"Malformed checksum value '{file_metadata['checksum']}' for '{file_path}'",
+                )
+            alg, digest = parts
             method = getattr(hashlib, alg.lower(), None)
             if method is not None:
                 h = method(usedforsecurity=False)
@@ -410,6 +416,9 @@ def _generate_sources_list(arch_dir: Path, for_output_dir: Path) -> None:
             continue
         repoid = entry.name
         local_path = for_output_dir.joinpath(DEFAULT_PACKAGE_DIR, arch_dir.name, repoid)
+        # [trusted=yes] disables APT GPG signature verification. This is acceptable
+        # for a local offline repo: packages were already checksum-verified at download
+        # time, and no signing keys are available for locally-generated Packages indices.
         lines.append(f"deb [trusted=yes] file://{local_path} ./")
 
     if lines:

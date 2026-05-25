@@ -262,7 +262,7 @@ def test_download_filters_architectures(
 @mock.patch("pathlib.Path.stat")
 def test_verify_downloaded_unexpected_size(stat_mock: mock.Mock) -> None:
     stat_mock.return_value = mock.Mock()
-    stat_mock.st_size = 0
+    stat_mock.return_value.st_size = 0
     metadata = {Path("foo"): {"size": 12345}}
 
     with pytest.raises(ChecksumVerificationFailed):
