@@ -282,6 +282,7 @@ export GOCACHE=/tmp/hermeto-output/deps/gomod
 export GOMODCACHE=/tmp/hermeto-output/deps/gomod/pkg/mod
 export GOPATH=/tmp/hermeto-output/deps/gomod
 export GOPROXY=file:///tmp/hermeto-output/deps/gomod/pkg/mod/cache/download
+export GOSUMDB=off
 ```
 
 #### Inject project files
