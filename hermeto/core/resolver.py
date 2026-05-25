@@ -10,6 +10,7 @@ from hermeto.core.models.output import RequestOutput
 from hermeto.core.package_managers import (
     bundler,
     cargo,
+    deb,
     generic,
     gomod,
     maven,
@@ -28,6 +29,7 @@ _package_managers: dict[PackageManagerType, Handler] = {
     "bundler": bundler.fetch_bundler_source,
     "cargo": cargo.fetch_cargo_source,
     "gomod": gomod.fetch_gomod_source,
+    "x-deb": deb.fetch_deb_source,
     "x-maven": maven.fetch_maven_source,
     "npm": npm.fetch_npm_source,
     "pip": pip.fetch_pip_source,
@@ -90,4 +92,7 @@ def inject_files_post(from_output_dir: Path, for_output_dir: Path, **kwargs: Any
     # if there is a callback method defined within the particular package manager, run it
     if hasattr(rpm, "inject_files_post"):
         callback_method = getattr(rpm, "inject_files_post")
+        callback_method(from_output_dir, for_output_dir, **kwargs)
+    if hasattr(deb, "inject_files_post"):
+        callback_method = getattr(deb, "inject_files_post")
         callback_method(from_output_dir, for_output_dir, **kwargs)

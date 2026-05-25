@@ -112,6 +112,7 @@ PackageManagerType = Literal[
     "yarn",
     # Add experimental package managers (or package managers whose implementation is in progress)
     # here with an x- prefix (e.g. "x-foo"):
+    "x-deb",
     "x-maven",
     "x-pnpm",
 ]
@@ -256,6 +257,12 @@ class BundlerBinaryFilters(BinaryModeOptions):
         return cls()
 
 
+class DebBinaryFilters(pydantic.BaseModel, extra="forbid"):
+    """Binary filters specific to DEB packages."""
+
+    arch: BinaryFilterStr = BINARY_FILTER_ALL
+
+
 class RpmBinaryFilters(pydantic.BaseModel, extra="forbid"):
     """Binary filters specific to RPM packages."""
 
@@ -280,6 +287,13 @@ class CargoPackageInput(_PackageInputBase):
     """Accepted input for a cargo package."""
 
     type: Literal["cargo"]
+
+
+class DebPackageInput(_PackageInputBase):
+    """Accepted input for a deb package."""
+
+    type: Literal["x-deb"]
+    binary: DebBinaryFilters | None = None
 
 
 class GenericPackageInput(_PackageInputBase):
@@ -424,6 +438,7 @@ class YarnPackageInput(_PackageInputBase):
 PackageInput = Annotated[
     BundlerPackageInput
     | CargoPackageInput
+    | DebPackageInput
     | GenericPackageInput
     | GomodPackageInput
     | MavenPackageInput
@@ -512,6 +527,11 @@ class Request(pydantic.BaseModel):
     def cargo_packages(self) -> list[CargoPackageInput]:
         """Get the cargo packages specified for this request."""
         return self._packages_by_type(CargoPackageInput)
+
+    @property
+    def deb_packages(self) -> list[DebPackageInput]:
+        """Get the deb packages specified for this request."""
+        return self._packages_by_type(DebPackageInput)
 
     @property
     def generic_packages(self) -> list[GenericPackageInput]:
